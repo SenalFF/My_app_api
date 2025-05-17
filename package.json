@@ -1,0 +1,23 @@
+{
+  "name": "node-express-api",
+  "description": "Simple api sample in Node",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js"
+  },
+  "author": "Google LLC",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "pretty-bytes": "^7.0.0",
+    "ytdl-core": "^4.11.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
