@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>YouTube Downloader</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; max-width: 600px; margin: auto; }
+    input, button, select { padding: 10px; margin-top: 10px; width: 100%; }
+    .format { border: 1px solid #ccc; padding: 10px; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h2>YouTube Downloader</h2>
+
+  <input type="text" id="urlInput" placeholder="Enter YouTube URL" />
+  <button onclick="fetchFormats()">Get Formats</button>
+
+  <div id="formatList"></div>
+
+  <script>
+    async function fetchFormats() {
+      const url = document.getElementById('urlInput').value;
+      const formatList = document.getElementById('formatList');
+      formatList.innerHTML = 'Loading formats...';
+
+      try {
+        const res = await fetch(`http://localhost:3000/formats?url=${encodeURIComponent(url)}`);
+        const data = await res.json();
+
+        if (!data.formats) {
+          formatList.innerHTML = 'Error: Invalid response';
+          return;
+        }
+
+        formatList.innerHTML = `<h3>${data.title}</h3>`;
+
+        data.formats.forEach(format => {
+          if (!format.hasVideo && !format.hasAudio) return;
+
+          const label = format.qualityLabel || 'Audio only';
+          const type = format.mimeType.split(';')[0];
+          const size = format.size;
+
+          const btn = `<a href="http://localhost:3000/download?url=${encodeURIComponent(url)}&itag=${format.itag}" target="_blank">
+                        <button>Download</button>
+                      </a>`;
+
+          formatList.innerHTML += `
+            <div class="format">
+              <strong>${label}</strong><br>
+              Type: ${type}<br>
+              Size: ${size}<br>
+              ${btn}
+            </div>
+          `;
+        });
+
+      } catch (err) {
+        formatList.innerHTML = 'Failed to fetch formats.';
+        console.error(err);
+      }
+    }
+  </script>
+</body>
+</html>
